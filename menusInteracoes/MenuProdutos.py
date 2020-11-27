@@ -98,8 +98,7 @@ def menuProdutos():
                         print(f'O CNPJ {novoFornecedor} nao esta inserido no sistema')
 
                     else:
-                        atualizaProduto.atualizaProduto(codigoProduto, dado='Fornecedor',valor=doc2["Nome"])
-                        atualizaProduto.atualizaProduto(codigoProduto, dado='CNPJFornecedor',valor=doc2["CNPJ"])
+                        atualizaProduto.atualizaProduto(codigoProduto, dado='Fornecedor',valor=doc2)
 
                 else:
                     print('Opcao Invalida')

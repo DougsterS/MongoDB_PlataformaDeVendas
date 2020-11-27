@@ -3,6 +3,7 @@ Classe responsável por conter a classe Produto e todas as acoes ligadas aos mes
 '''
 
 from pymongo import MongoClient
+from classesMongo.Fornecedor import Fornecedor
 
 bdProduto = MongoClient("mongodb://localhost:27017") #estabelece conexão com o banco
 banco = bdProduto['VendasAPP'] #faz uso ddo banco
@@ -11,15 +12,13 @@ class Produto(object):
 
     def criaProduto(self,cnpjFornecedor):
 
-        fornecedor = banco.fornecedores
-        doc = fornecedor.find_one({'CNPJ': cnpjFornecedor})
+        lerFornecedor=Fornecedor()
 
         produto = {
             'Nome': self.Nome,
             'Codigo': self.Codigo,
             'Preco': self.Preco,
-            'Fornecedor': doc['Nome'],
-            'CNPJFornecedor': doc['CNPJ']
+            'Fornecedor': lerFornecedor.fornecedorJson(idFornecedor=cnpjFornecedor)
         }
 
         produtos = banco.produtos
@@ -29,8 +28,9 @@ class Produto(object):
     def listaProduto(self):
         produtos = banco.produtos
         for doc in produtos.find():
-            print(f'Produto: {doc["Nome"]}\nCodigo do Produto: {doc["Codigo"]}\nPreco: {doc["Preco"]}'
-                  f'\nFornecido por: {doc["Fornecedor"]}\nCNPJ do Fornecedor: {doc["CNPJFornecedor"]}\n')
+            doc2 = doc["Fornecedor"]
+            print(f'Produto: {doc["Nome"]}\nCodigo do Produto: {doc["Codigo"]}\nPreco: {doc["Preco"]}\n'
+                  f'Fornecedor: {doc2["Nome"]}\nCNPJ Do Fornecedor: {doc2["CNPJ"]}')
 
     def procuraProduto(self,codProduto):
         produtos = banco.produtos
@@ -38,8 +38,9 @@ class Produto(object):
         if (doc is None):
             print(f'Nao existe produto de codigo {codProduto} no sistema')
         else:
+            doc2 = doc["Fornecedor"]
             print(f'\nProduto: {doc["Nome"]}\nCodigo do Produto: {doc["Codigo"]}\nPreco: {doc["Preco"]}'
-                  f'\nFornecido por: {doc["Fornecedor"]}\nCNPJ do Fornecedor: {doc["CNPJFornecedor"]}\n')
+                  f'\nFornecido por: {doc2["Nome"]}\nCNPJ do Fornecedor: {doc2["CNPJ"]}\n')
 
     def atualizaProduto(self, codProduto, dado, valor):
         produtos = banco.produtos
@@ -71,3 +72,11 @@ class Produto(object):
 
             else:
                 print('Operacao cancelada!!!')
+
+    def produtoJson(self,idProduto):
+        produtos = banco.produtos
+        doc = produtos.find_one({'Codigo': idProduto})
+        if (doc is None):
+            print(f'O CNPJ {idProduto} nao consta no sistema')
+        else:
+            return doc

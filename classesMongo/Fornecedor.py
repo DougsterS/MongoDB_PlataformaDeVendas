@@ -62,3 +62,11 @@ class Fornecedor(object):
                 "$set" : {f'{dado}': valor}
             })
             print(f'{doc["Nome"]} alterado no CNPJ {doc["CNPJ"]}')
+
+    def fornecedorJson(self,idFornecedor):
+        fornecedores = banco.fornecedores
+        doc = fornecedores.find_one({'CNPJ': idFornecedor})
+        if (doc is None):
+            print(f'O CNPJ {idFornecedor} nao consta no sistema')
+        else:
+            return doc

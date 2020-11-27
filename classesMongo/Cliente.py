@@ -64,3 +64,11 @@ class Cliente(object):
             }
             })
             print(f'{doc["Nome"]} alterado com sucesso no CPF {doc["CPF"]}')
+
+    def clienteJson(self,cpf):
+        clientes = banco.clientes
+        doc = clientes.find_one({'CPF': cpf})
+        if (doc is None):
+            print(f'O CNPJ {cpf} nao consta no sistema')
+        else:
+            return doc
